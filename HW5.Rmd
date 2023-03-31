@@ -1,6 +1,6 @@
 ---
 title: "HW5"
-output: pdf_document
+output: html_document
 date: "2023-03-31"
 ---
 
@@ -29,7 +29,7 @@ pv1
 pv2
 ```
 
-#### (a)
+#### (b)
 ```{r}
 M2 = glm(Sa ~ W + Wt, family=poisson(link=log), data=crab)
 summary(M2)
@@ -38,7 +38,7 @@ summary(M2)
 test.stat = M1$deviance - M2$deviance
 df = 171-170
 pv3 =  1-pchisq(test.stat, df = df)
-pv3
+pv3 #
 ```
 
 
