@@ -1,0 +1,45 @@
+---
+title: "HW5"
+output: pdf_document
+date: "2023-03-31"
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(readr)
+```
+
+### QUESTION 1
+
+#### (a)
+```{r}
+## fit a log-link model
+crab = read.table("HW5-crab.txt", header = TRUE)
+M1 = glm(Sa ~ W, family=poisson(link=log), data=crab)
+summary(M1)
+
+# goodness of fit
+res.pearson = residuals(M1, type="pearson")
+G.stat = sum(res.pearson^2)
+res.dev = residuals(M1, type="deviance")
+D.stat = sum(res.dev^2)
+pv1 = 1-pchisq(G.stat, df=171)
+pv2 = 1-pchisq(D.stat, df=171)
+pv1
+pv2
+```
+
+#### (a)
+```{r}
+M2 = glm(Sa ~ W + Wt, family=poisson(link=log), data=crab)
+summary(M2)
+
+# compare 2 models
+test.stat = M1$deviance - M2$deviance
+df = 171-170
+pv3 =  1-pchisq(test.stat, df = df)
+pv3
+```
+
+
+
