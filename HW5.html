@@ -365,7 +365,7 @@ display: none;
 <h3>QUESTION 1</h3>
 <div id="a" class="section level4">
 <h4>(a)</h4>
-<pre class="r"><code>## fit a log-link model
+<pre class="r"><code>## fit a poisson log-link model
 crab = read.table(&quot;HW5-crab.txt&quot;, header = TRUE)
 M1 = glm(Sa ~ W, family=poisson(link=log), data=crab)
 summary(M1)</code></pre>
@@ -396,16 +396,27 @@ res.pearson = residuals(M1, type=&quot;pearson&quot;)
 G.stat = sum(res.pearson^2)
 res.dev = residuals(M1, type=&quot;deviance&quot;)
 D.stat = sum(res.dev^2)
-pv1 = 1-pchisq(G.stat, df=171)
-pv2 = 1-pchisq(D.stat, df=171)
-pv1</code></pre>
+1-pchisq(G.stat, df=173-2)</code></pre>
 <pre><code>## [1] 0</code></pre>
-<pre class="r"><code>pv2</code></pre>
+<pre class="r"><code>1-pchisq(D.stat, df=173-2)</code></pre>
 <pre><code>## [1] 0</code></pre>
+<p><strong>Goodness of fit:</strong></p>
+<p>The Pearson’s Chi-square test statistic is 544.16, deviance test
+statistic is 567.88. The p-values of both of them are less than 0.05
+under 171 df, indicating the fit is not good here.</p>
+<p><strong>Interpretation of the model:</strong></p>
+<p>We fitted a poisson log linear model here where:</p>
+<p>log(E(Y)) = β0 + β1·X</p>
+<p>with Y=Sa (number of satellites), X=W (carapace width).</p>
+<p>Here β0 = -3.3, β1 = 0.16. Indicating that when the carapace width is
+0, the expected number of satellites is 0.04 . When there’s one unit
+change in carapace width, the expected change in the number of
+satellites is 1.18.</p>
 </div>
 <div id="b" class="section level4">
 <h4>(b)</h4>
-<pre class="r"><code>M2 = glm(Sa ~ W + Wt, family=poisson(link=log), data=crab)
+<pre class="r"><code># fit again with 2 predictors
+M2 = glm(Sa ~ W + Wt, family=poisson(link=log), data=crab)
 summary(M2)</code></pre>
 <pre><code>## 
 ## Call:
@@ -430,12 +441,86 @@ summary(M2)</code></pre>
 ## AIC: 921.18
 ## 
 ## Number of Fisher Scoring iterations: 6</code></pre>
+<pre class="r"><code># goodness of fit
+res.pearson2 = residuals(M2, type=&quot;pearson&quot;)
+G.stat2 = sum(res.pearson2^2)
+res.dev2 = residuals(M2, type=&quot;deviance&quot;)
+D.stat2 = sum(res.dev2^2)
+1-pchisq(G.stat2, df=173-3)</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>1-pchisq(D.stat2, df=173-3)</code></pre>
+<pre><code>## [1] 0</code></pre>
 <pre class="r"><code># compare 2 models
 test.stat = M1$deviance - M2$deviance
 df = 171-170
 pv3 =  1-pchisq(test.stat, df = df)
-pv3 #</code></pre>
+pv3 # rej, choose larger model</code></pre>
 <pre><code>## [1] 0.004694838</code></pre>
+<p>The Pearson’s Chi-square test statistic is 536.6, deviance test
+statistic is 559.89. The p-values of both of them are less than 0.05
+under 170 df, indicating the fit is not good here. However, the p-value
+of the deviance test comparing the two models is less than 0.05 under 1
+df, indicating that we should choose the larger model over the smaller
+one.</p>
+</div>
+<div id="c" class="section level4">
+<h4>(c)</h4>
+</div>
+</div>
+<div id="question-2" class="section level3">
+<h3>QUESTION 2</h3>
+<div id="a-1" class="section level4">
+<h4>(a)</h4>
+<pre class="r"><code># fit a poisson log-link model
+fish = read.table(&quot;HW5-parasite.txt&quot;, header = TRUE)
+fish = fish %&gt;% 
+  mutate(Area = as.factor(Area),
+         Year = as.factor(Year))
+M1.fish = glm(Intensity ~ Area + Year + Length, family=poisson(link=log), data=fish)
+summary(M1.fish)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Intensity ~ Area + Year + Length, family = poisson(link = log), 
+##     data = fish)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -9.3632  -2.7158  -2.0142  -0.4731  30.2492  
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  2.6431709  0.0542838  48.692  &lt; 2e-16 ***
+## Area2       -0.2119557  0.0491691  -4.311 1.63e-05 ***
+## Area3       -0.1168602  0.0428296  -2.728  0.00636 ** 
+## Area4        1.4049366  0.0356625  39.395  &lt; 2e-16 ***
+## Year2000     0.6702801  0.0279823  23.954  &lt; 2e-16 ***
+## Year2001    -0.2181393  0.0287535  -7.587 3.29e-14 ***
+## Length      -0.0284228  0.0008809 -32.265  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for poisson family taken to be 1)
+## 
+##     Null deviance: 25797  on 1190  degrees of freedom
+## Residual deviance: 19153  on 1184  degrees of freedom
+##   (63 observations deleted due to missingness)
+## AIC: 21089
+## 
+## Number of Fisher Scoring iterations: 7</code></pre>
+</div>
+<div id="b-1" class="section level4">
+<h4>(b)</h4>
+<pre class="r"><code># goodness of fit
+res.pearson = residuals(M1.fish, type=&quot;pearson&quot;)
+G.stat = sum(res.pearson^2)
+res.dev = residuals(M1.fish, type=&quot;deviance&quot;)
+D.stat = sum(res.dev^2)
+pv1 = 1-pchisq(G.stat, df=1184)
+pv2 = 1-pchisq(D.stat, df=1184)
+pv1</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>pv2</code></pre>
+<pre><code>## [1] 0</code></pre>
 </div>
 </div>
 
