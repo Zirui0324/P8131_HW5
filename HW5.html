@@ -507,20 +507,47 @@ summary(M1.fish)</code></pre>
 ## AIC: 21089
 ## 
 ## Number of Fisher Scoring iterations: 7</code></pre>
+<p><strong>Interpretation of the model:</strong></p>
+<p>We fitted a poisson log linear model here where:</p>
+<p>log(E(Y)) = β0 + β1·X1 + β2·X2 + β3·X3</p>
+<p>with Y = Intensity, X1 = Area2, X2 = Area3, X3 = Area3, X4 =
+Year2000, X5 = Year2001, X5 = Length.</p>
+<ul>
+<li><p>Here exp(β1) = 0.81, indicating that adjusting for year and
+length, the intensity of parasite in area2 is 0.81 times of that in
+area1.</p></li>
+<li><p>exp(β2) = 0.89, indicating that adjusting for year and length,
+the intensity of parasite in area3 is 0.89 times of that in
+area1.</p></li>
+<li><p>exp(β3) = 4.08, indicating that adjusting for year and length,
+the intensity of parasite in area4 is 4.08 times of that in
+area1.</p></li>
+<li><p>exp(β4) = 1.95, indicating that adjusting for area and length,
+the intensity of parasite in year 2000 is 1.95 times of that in year
+1999.</p></li>
+<li><p>exp(β5) = 0.8, indicating that adjusting for area and length, the
+intensity of parasite in year 2001 is 0.8 times of that in year
+1999.</p></li>
+<li><p>exp(β6) = 0.97, indicating that adjusting for area and year, with
+one unit increase in length, the intensity of parasite would decrease by
+0.97 times.</p></li>
+</ul>
 </div>
 <div id="b-1" class="section level4">
 <h4>(b)</h4>
 <pre class="r"><code># goodness of fit
-res.pearson = residuals(M1.fish, type=&quot;pearson&quot;)
-G.stat = sum(res.pearson^2)
-res.dev = residuals(M1.fish, type=&quot;deviance&quot;)
-D.stat = sum(res.dev^2)
-pv1 = 1-pchisq(G.stat, df=1184)
-pv2 = 1-pchisq(D.stat, df=1184)
-pv1</code></pre>
+res.pearson.fish = residuals(M1.fish, type=&quot;pearson&quot;)
+G.stat.fish = sum(res.pearson.fish^2)
+res.dev.fish = residuals(M1.fish, type=&quot;deviance&quot;)
+D.stat.fish = sum(res.dev.fish^2)
+1-pchisq(G.stat.fish, df=1184)</code></pre>
 <pre><code>## [1] 0</code></pre>
-<pre class="r"><code>pv2</code></pre>
+<pre class="r"><code>1-pchisq(D.stat.fish, df=1184)</code></pre>
 <pre><code>## [1] 0</code></pre>
+<p><strong>Goodness of fit:</strong></p>
+<p>The Pearson’s Chi-square test statistic is 4.2164972^{4}, deviance
+test statistic is 1.9152798^{4}. The p-values of both of them are less
+than 0.05 under 1184 df, indicating the fit is not good here.</p>
 </div>
 </div>
 

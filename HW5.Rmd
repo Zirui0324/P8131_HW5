@@ -82,18 +82,38 @@ fish = fish %>%
 M1.fish = glm(Intensity ~ Area + Year + Length, family=poisson(link=log), data=fish)
 summary(M1.fish)
 ```
+**Interpretation of the model:**
+
+We fitted a poisson log linear model here where:
+
+log(E(Y)) = β0 + β1·X1 + β2·X2 + β3·X3
+
+with Y = Intensity, X1 = Area2, X2 = Area3, X3 = Area3, X4 = Year2000, X5 = Year2001, X5 = Length.
+
+- Here exp(β1) = `r round(exp(M1.fish$coefficients[2]), 2)`, indicating that adjusting for year and length, the intensity of parasite in area2 is `r round(exp(M1.fish$coefficients[2]), 2)` times of that in area1.
+
+- exp(β2) = `r round(exp(M1.fish$coefficients[3]), 2)`, indicating that adjusting for year and length, the intensity of parasite in area3 is `r round(exp(M1.fish$coefficients[3]), 2)` times of that in area1.
+
+- exp(β3) = `r round(exp(M1.fish$coefficients[4]), 2)`, indicating that adjusting for year and length, the intensity of parasite in area4 is `r round(exp(M1.fish$coefficients[4]), 2)` times of that in area1.
+
+- exp(β4) = `r round(exp(M1.fish$coefficients[5]), 2)`, indicating that adjusting for area and length, the intensity of parasite in year 2000 is `r round(exp(M1.fish$coefficients[5]), 2)` times of that in year 1999.
+
+- exp(β5) = `r round(exp(M1.fish$coefficients[6]), 2)`, indicating that adjusting for area and length, the intensity of parasite in year 2001 is `r round(exp(M1.fish$coefficients[6]), 2)` times of that in year 1999.
+
+- exp(β6) = `r round(exp(M1.fish$coefficients[7]), 2)`, indicating that adjusting for area and year, with one unit increase in length, the intensity of parasite would decrease by `r round(exp(M1.fish$coefficients[7]), 2)` times.
+
 
 #### (b)
 ```{r}
 # goodness of fit
-res.pearson = residuals(M1.fish, type="pearson")
-G.stat = sum(res.pearson^2)
-res.dev = residuals(M1.fish, type="deviance")
-D.stat = sum(res.dev^2)
-pv1 = 1-pchisq(G.stat, df=1184)
-pv2 = 1-pchisq(D.stat, df=1184)
-pv1
-pv2
+res.pearson.fish = residuals(M1.fish, type="pearson")
+G.stat.fish = sum(res.pearson.fish^2)
+res.dev.fish = residuals(M1.fish, type="deviance")
+D.stat.fish = sum(res.dev.fish^2)
+1-pchisq(G.stat.fish, df=1184)
+1-pchisq(D.stat.fish, df=1184)
 ```
+**Goodness of fit:**
 
+The Pearson's Chi-square test statistic is `r G.stat.fish`, deviance test statistic is `r D.stat.fish`. The p-values of both of them are less than 0.05 under 1184 df, indicating the fit is not good here.
 
